@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="bower_components/jquery/dist/jquery.min.js"></script>
+        <script src="bower_components/jquery-ui/ui/jquery-ui.js"></script>
+        <!--        <script src="bower_components/moment/moment.js"></script>
+                <script src="bower_components/d3/d3.min.js"></script>-->
+        <script src="bower_components/highcharts/highcharts.js"></script>
+        <script src="bower_components/highcharts/highcharts-more.js"></script>
+        <!--<script src="bower_components/highcharts/lib/modules/solid-gauge.js"></script>-->
+        <script src="bower_components/highcharts/modules/exporting.js"></script>        
+
+        <link rel="stylesheet" type="text/css" href="bower_components/jquery-ui/themes/dark-hive/jquery-ui.css">
+        <link rel="stylesheet" type="text/css" href="bower_components/jquery-ui-daterangepicker/jquery.comiseo.daterangepicker.css">
+        <script src="bower_components/momentjs/moment.js"></script>
+        <script src="bower_components/jquery-ui-daterangepicker/jquery.comiseo.daterangepicker.js"></script>
+
+
+        <link rel="stylesheet" type="text/css" href="bower_components/jquery-ui/themes/dark-hive/jquery.ui.theme.css">
+
+        <style>
+            #chart rect{
+                fill: #4aaeea;
+            }
+
+            #chart text{
+                fill: white;
+                font: 10px sans-serif;
+                text-anchor: end; 
+            }
+
+            .axis text{
+                font: 10px sans-serif;
+            }
+
+            .axis path, .axis line{
+                fill: none;
+                stroke : #fff;
+                shape-rendering: crispEdges;
+            }
+
+            body{
+                background: #1a1a1a;
+                color : #eaeaea;
+                padding : 10px;
+            }
+        </style>
+
+
+        <script>
+
+            function onlyUnique(value, index, self) {
+                return self.indexOf(value) === index;
+            }
+
+            function graphTheData(data) {
+                var dataOut = [];
+                var nameArray = [];
+
+                // get the zones - names
+                for (var k = 0; k < data.length; k++) {
+                    nameArray.push(data[k].zone);
+                }
+
+                nameArray = nameArray.filter(onlyUnique);
+
+                // create container for zones 
+                for (var i = 0; i < nameArray.length; i++) {
+                    dataOut.push({"name": nameArray[i], data: []});
+                }
+
+                //populate data
+                for (var j = 0; j < data.length; j++) {
+
+                    var obj = data[j];
+
+                    for (var k = 0; k < dataOut.length; k++) {
+                        if (dataOut[k].name === obj.zone) {
+                            dataOut[k].data.push([obj.timeStampInMillis, obj.temperature]);
+                        }
+                    }
+                }
+
+                console.log(dataOut);
+                /**
+                 * Dark theme for Highcharts JS
+                 * @author Torstein Honsi
+                 */
+
+                // Load the fonts
+                Highcharts.createElement('link', {
+                    href: '//fonts.googleapis.com/css?family=Unica+One',
+                    rel: 'stylesheet',
+                    type: 'text/css'
+                }, null, document.getElementsByTagName('head')[0]);
+
+                Highcharts.theme = {
+                    colors: ["#2b908f", "#90ee7e", "#f45b5b", "#7798BF", "#aaeeee", "#ff0066", "#eeaaee",
+                        "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"],
+                    chart: {
+                        backgroundColor: {
+                            linearGradient: {x1: 0, y1: 0, x2: 1, y2: 1},
+                            stops: [
+                                [0, '#2a2a2b'],
+                                [1, '#3e3e40']
+                            ]
+                        },
+                        style: {
+                            fontFamily: "'Unica One', sans-serif"
+                        },
+                        plotBorderColor: '#606063'
+                    },
+                    title: {
+                        style: {
+                            color: '#E0E0E3',
+                            textTransform: 'uppercase',
+                            fontSize: '20px'
+                        }
+                    },
+                    subtitle: {
+                        style: {
+                            color: '#E0E0E3',
+                            textTransform: 'uppercase'
+                        }
+                    },
+                    xAxis: {
+                        gridLineColor: '#707073',
+                        labels: {
+                            style: {
+                                color: '#E0E0E3'
+                            }
+                        },
+                        lineColor: '#707073',
+                        minorGridLineColor: '#505053',
+                        tickColor: '#707073',
+                        title: {
+                            style: {
+                                color: '#A0A0A3'
+
+                            }
+                        }
+                    },
+                    yAxis: {
+                        gridLineColor: '#707073',
+                        labels: {
+                            style: {
+                                color: '#E0E0E3'
+                            }
+                        },
+                        lineColor: '#707073',
+                        minorGridLineColor: '#505053',
+                        tickColor: '#707073',
+                        tickWidth: 1,
+                        title: {
+                            style: {
+                                color: '#A0A0A3'
+                            }
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.85)',
+                        style: {
+                            color: '#F0F0F0'
+                        }
+                    },
+                    plotOptions: {
+                        series: {
+                            dataLabels: {
+                                color: '#B0B0B3'
+                            },
+                            marker: {
+                                lineColor: '#333'
+                            }
+                        },
+                        boxplot: {
+                            fillColor: '#505053'
+                        },
+                        candlestick: {
+                            lineColor: 'white'
+                        },
+                        errorbar: {
+                            color: 'white'
+                        }
+                    },
+                    legend: {
+                        itemStyle: {
+                            color: '#E0E0E3'
+                        },
+                        itemHoverStyle: {
+                            color: '#FFF'
+                        },
+                        itemHiddenStyle: {
+                            color: '#606063'
+                        }
+                    },
+                    credits: {
+                        style: {
+                            color: '#666'
+                        }
+                    },
+                    labels: {
+                        style: {
+                            color: '#707073'
+                        }
+                    },
+                    drilldown: {
+                        activeAxisLabelStyle: {
+                            color: '#F0F0F3'
+                        },
+                        activeDataLabelStyle: {
+                            color: '#F0F0F3'
+                        }
+                    },
+                    navigation: {
+                        buttonOptions: {
+                            symbolStroke: '#DDDDDD',
+                            theme: {
+                                fill: '#505053'
+                            }
+                        }
+                    },
+                    // scroll charts
+                    rangeSelector: {
+                        buttonTheme: {
+                            fill: '#505053',
+                            stroke: '#000000',
+                            style: {
+                                color: '#CCC'
+                            },
+                            states: {
+                                hover: {
+                                    fill: '#707073',
+                                    stroke: '#000000',
+                                    style: {
+                                        color: 'white'
+                                    }
+                                },
+                                select: {
+                                    fill: '#000003',
+                                    stroke: '#000000',
+                                    style: {
+                                        color: 'white'
+                                    }
+                                }
+                            }
+                        },
+                        inputBoxBorderColor: '#505053',
+                        inputStyle: {
+                            backgroundColor: '#333',
+                            color: 'silver'
+                        },
+                        labelStyle: {
+                            color: 'silver'
+                        }
+                    },
+                    navigator: {
+                        handles: {
+                            backgroundColor: '#666',
+                            borderColor: '#AAA'
+                        },
+                        outlineColor: '#CCC',
+                        maskFill: 'rgba(255,255,255,0.1)',
+                        series: {
+                            color: '#7798BF',
+                            lineColor: '#A6C7ED'
+                        },
+                        xAxis: {
+                            gridLineColor: '#505053'
+                        }
+                    },
+                    scrollbar: {
+                        barBackgroundColor: '#808083',
+                        barBorderColor: '#808083',
+                        buttonArrowColor: '#CCC',
+                        buttonBackgroundColor: '#606063',
+                        buttonBorderColor: '#606063',
+                        rifleColor: '#FFF',
+                        trackBackgroundColor: '#404043',
+                        trackBorderColor: '#404043'
+                    },
+                    // special colors for some of the
+                    legendBackgroundColor: 'rgba(0, 0, 0, 0.5)',
+                    background2: '#505053',
+                    dataLabelsColor: '#B0B0B3',
+                    textColor: '#C0C0C0',
+                    contrastTextColor: '#F0F0F3',
+                    maskColor: 'rgba(255,255,255,0.3)'
+                };
+
+// Apply the theme
+                Highcharts.setOptions(Highcharts.theme);
+
+                $('#container').highcharts({
+                    chart: {
+                        type: 'spline'
+                    },
+                    title: {
+                        text: 'Ambient Temperature at 2 Woodville Rise'
+                    },
+                    subtitle: {
+                        text: 'Demo for myHouse IOT'
+                    },
+                    xAxis: {
+                        type: 'datetime',
+                        dateTimeLabelFormats: {// don't display the dummy year
+                            month: '%e. %b',
+                            year: '%b'
+                        },
+                        title: {
+                            text: 'Date'
+                        }
+                    },
+                    yAxis: {
+                        title: {
+                            text: 'Temperature C'
+                        }//,
+                        //min: 0
+                    },
+                    tooltip: {
+                        headerFormat: '<b>{series.name}</b><br>',
+                        pointFormat: '{point.x:%e. %b}<br>{point.y:.2f} Celsius'
+                    },
+                    plotOptions: {
+                        spline: {
+                            marker: {
+                                enabled: true
+                            }
+                        }
+                    },
+                    series: dataOut
+                });
+
+            }
+
+
+
+            function graphCurrentTemperatures(obj) {
+
+                // create div
+                var zoneID = "#" + obj.zone;
+                var container = $('<div id="' + obj.zone + '" style="width: 300px; height: 300px; float: left"></div>');
+                $('#solidgaugeContainer').append(container);
+
+
+                $(zoneID).highcharts({
+                    chart: {
+                        type: 'gauge',
+                        plotBackgroundColor: '#777777',
+                        plotBackgroundImage: null,
+                        plotBorderWidth: 0,
+                        plotShadow: false
+                    },
+                    title: {
+                        text: obj.zone
+                    },
+                    pane: {
+                        startAngle: -150,
+                        endAngle: 150,
+                        background: [{
+                                backgroundColor: {
+                                    linearGradient: {x1: 0, y1: 0, x2: 0, y2: 1},
+                                    stops: [
+                                        [0, '#FFF'],
+                                        [1, '#333']
+                                    ]
+                                },
+                                borderWidth: 0,
+                                outerRadius: '109%'
+                            }, {
+                                backgroundColor: {
+                                    linearGradient: {x1: 0, y1: 0, x2: 0, y2: 1},
+                                    stops: [
+                                        [0, '#333'],
+                                        [1, '#FFF']
+                                    ]
+                                },
+                                borderWidth: 1,
+                                outerRadius: '107%'
+                            }, {
+                                // default background
+                            }, {
+                                backgroundColor: '#DDD',
+                                borderWidth: 0,
+                                outerRadius: '105%',
+                                innerRadius: '103%'
+                            }]
+                    },
+                    // the value axis
+                    yAxis: {
+                        min: -20,
+                        max: 40,
+                        minorTickInterval: 'auto',
+                        minorTickWidth: 1,
+                        minorTickLength: 10,
+                        minorTickPosition: 'inside',
+                        minorTickColor: '#666',
+                        tickPixelInterval: 30,
+                        tickWidth: 2,
+                        tickPosition: 'inside',
+                        tickLength: 10,
+                        tickColor: '#666',
+                        labels: {
+                            step: 2,
+                            rotation: 'auto'
+                        },
+                        title: {
+                            text: 'Celsius'
+                        },
+                        plotBands: [{
+                                from: -20,
+                                to: 10,
+                                color: '#DDDF0D' // yellow
+                            }, {
+                                from: 10,
+                                to: 30,
+                                color: '#55BF3B' // green
+                            }, {
+                                from: 30,
+                                to: 40,
+                                color: '#DF5353' // red
+                            }]
+                    },
+                    series: [{
+                            name: obj.zone,
+                            data: [obj.temperature],
+                            tooltip: {
+                                valueSuffix: 'Celsius'
+                            }
+                        }]
+
+                });
+            }
+
+            $(document).ready(function () {
+                $('#solidgaugeContainer').empty();
+                var chartRawData;
+                
+                var today = new Date();
+                var dd = today.getDate();
+                var mm = today.getMonth()+1; //January is 0!
+                var yyyy = today.getFullYear();
+               
+
+                if(dd<10) {
+                    dd='0'+dd;
+                } 
+
+                if(mm<10) {
+                    mm='0'+mm;
+                } 
+
+                today = dd+'-'+mm+'-'+yyyy;
+
+                var jqxhr = $.getJSON("http://192.168.192.4:8080/ESP12IOT/webresources/TempData/"+today+"/"+today);
+                jqxhr.done(function (data) {
+                    chartRawData = data;
+                    console.log(data);
+                    graphTheData(data);
+                });
+
+                jqxhr.fail(function () {
+                    console.log("error");
+                    jqxhr = $.getJSON("http://79.97.239.113:8080/ESP12IOT/webresources/TempData/"+today+"/"+today);
+                    jqxhr.done(function (data) {
+                        chartRawData = data;
+                        graphTheData(data);
+                        console.log(data);
+                    });
+                });
+
+                jqxhr.always(function () {
+                    console.log("complete");
+                });
+
+
+                var jqxhr2 = $.getJSON("http://192.168.192.4:8080/ESP12IOT/webresources/TempData/temperaturesNow");
+                jqxhr2.done(function (data) {
+                    console.log(data);
+                    for (var i in data) {
+                        graphCurrentTemperatures(data[i]);
+                    }
+                });
+
+                jqxhr2.fail(function () {
+                    console.log("error");
+                    jqxhr = $.getJSON("http://79.97.239.113:8080/ESP12IOT/webresources/TempData/temperaturesNow");
+                    jqxhr.done(function (data) {
+                        console.log(data);
+                        for (var i in data) {
+                            graphCurrentTemperatures(data[i]);
+                        }
+                    });
+                });
+
+                jqxhr.always(function () {
+                    console.log("complete");
+                });
+
+
+//                var ddata = [
+//                    {
+//                        "zone": "outside",
+//                        "temperature": 9,
+//                        "timeStamp": "2015-12-21T22:43:15Z",
+//                        "date": "2015-12-21 10:43:15",
+//                        "timeStampInMillis": 1450737795000
+//                    },
+//                    {
+//                        "zone": "livingRoom",
+//                        "temperature": 18.12,
+//                        "timeStamp": "2015-12-21T22:44:33Z",
+//                        "date": "2015-12-21 10:44:33",
+//                        "timeStampInMillis": 1450737873000
+//                    }
+//                ];
+//                for (var i in ddata) {
+//                    graphCurrentTemperatures(ddata[i]);
+//                }
+
+                $("#e1").daterangepicker({
+                    datepickerOptions: {
+                        numberOfMonths: 2
+                    },
+                    altFormat: "dd-mm-yy",
+                    onChange: function () {
+                        var dateRange = JSON.parse($("#e1").val());
+                        console.log(dateRange);
+                        var jqxhr = $.getJSON("http://192.168.192.4:8080/ESP12IOT/webresources/TempData/"+dateRange.start+"/"+dateRange.end);
+                        jqxhr.done(function (data) {
+                            console.log(data);
+                            graphTheData(data);
+                        });
+
+                        jqxhr.fail(function () {
+                            console.log("error");
+                            jqxhr = $.getJSON("http://79.97.239.113:8080/ESP12IOT/webresources/TempData/"+dateRange.start+"/"+dateRange.end);
+                            jqxhr.done(function (data) {
+                                graphTheData(data);
+                                console.log(data);
+                            });
+                        });
+
+                        jqxhr.always(function () {
+                            console.log("complete");
+                        });
+                    }
+                });
+
+            });
+        </script>
+
+
+    </head>
+    <body>
+        <div>
+            <input id="e1" name="e1">
+        </div>
+        <div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+        <div id="solidgaugeContainer">  </div>
+    </body>
+</html>

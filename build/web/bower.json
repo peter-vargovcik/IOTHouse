@@ -1,0 +1,26 @@
+{
+  "name": "myiot",
+  "authors": [
+    "Peter Vargovcik <peter.vargovcik@gmail.com>"
+  ],
+  "description": "my house is connected",
+  "main": "",
+  "moduleType": [
+    "node"
+  ],
+  "license": "MIT",
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "~2.1.4",
+    "jquery-ui": "~1.11.4",
+    "highcharts": "~4.2.1",
+    "jquery-ui-daterangepicker": "~0.4.3"
+  }
+}
